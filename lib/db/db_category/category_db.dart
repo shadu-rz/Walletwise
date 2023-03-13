@@ -56,6 +56,7 @@ class CategoryDB implements CategoryDbFunctions {
     );
     incomeCategoryListListener.notifyListeners();
     expenseCategoryListListener.notifyListeners();
+    
   }
 
   @override
