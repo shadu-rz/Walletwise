@@ -13,10 +13,10 @@ class ScreenAbout extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text('Wallet App',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             Text('Developed By MOHAMED SHADULI',

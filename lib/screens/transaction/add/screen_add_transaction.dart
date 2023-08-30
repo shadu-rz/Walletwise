@@ -1,362 +1,377 @@
 import 'package:flutter/material.dart';
-import 'package:wallet_app/db/db_category/category_db.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/db/db_transaction/transaction_db.dart';
 import 'package:wallet_app/models/transactions/transaction_model.dart';
+import 'package:wallet_app/provider/add_transaction_provider.dart';
+import 'package:wallet_app/provider/category_provider.dart';
+import 'package:wallet_app/provider/transaction_provider.dart';
 import 'package:wallet_app/screens/category/Add%20category%20pop%20up/category_add_popup.dart';
 import 'package:wallet_app/screens/home/home_screen.dart';
 
-class ScreenAddTransaction extends StatefulWidget {
-  const ScreenAddTransaction({super.key});
+class ScreenAddTransaction extends StatelessWidget {
+  ScreenAddTransaction({super.key});
 
-  @override
-  State<ScreenAddTransaction> createState() => _ScreenAddTransactionState();
-}
-
-class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
-  DateTime? selectedDate = DateTime.now();
-  CategoryType? selectedCategoryType;
-  CategoryModel? selectedCategoryModel;
-
-  String? categoryID;
-
-  final _formKey = GlobalKey<FormState>();
-
-  final purposeTextEditingController = TextEditingController();
-  final amountTextEditingController = TextEditingController();
-  final notesTextEditingController = TextEditingController();
-
-  @override
-  void initState() {
-    selectedCategoryType = CategoryType.income;
-    CategoryDB().refreshUI();
-    super.initState();
-  }
+  final _purposeTextEditingController = TextEditingController();
+  final _amountTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TransactionDB.instance.refresh();
-    CategoryDB.instance.refreshUI();
+    final screenSize = MediaQuery.of(context).size;
+
+    // // context.read<TransactionProvider>().refreshUiTransaction();
+    // context.read<CategoryProvider>().refreshUiCategory();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TransactionProvider>(context, listen: false)
+          .refreshUiTransaction();
+    });
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Add Transactions',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+      appBar: AppBar(
+        title: const Text(
+          'Add Transactions',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
-          centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  //Logo
-                  SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: Image.asset('assets/images/ic_launcher.png'),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              //Logo
+              SizedBox(
+                height: screenSize.width * 0.2,
+                child: Image.asset('assets/images/ic_launcher.png'),
+              ),
+              SizedBox(
+                height: screenSize.width * 0.02,
+              ),
 
-                  //Selected category income or expense
+              //Selected category income or expense
 
-                  SizedBox(
-                    width: double.maxFinite,
-                    child: Card(
-                      elevation: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Row(
-                            children: [
-                              Radio(
-                                value: CategoryType.income,
-                                groupValue: selectedCategoryType,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedCategoryType = CategoryType.income;
-                                    categoryID = null;
-                                  });
-                                },
-                              ),
-                              const Text('Income'),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Radio(
-                                value: CategoryType.expense,
-                                groupValue: selectedCategoryType,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedCategoryType = CategoryType.expense;
-                                    categoryID = null;
-                                  });
-                                },
-                              ),
-                              const Text('Expense'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 2,
-                  ),
-
-                  //category type Dropdown
-
-                  Row(
+              SizedBox(
+                width: double.maxFinite,
+                child: Consumer<AddTransactionProvider>(
+                    builder: (context, provider, _) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      SizedBox(
-                        height: 65,
-                        width: 280, //350,
-                        child: Card(
-                          elevation: 3,
-                          child: DropdownButtonHideUnderline(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: DropdownButton(
-                                hint: const Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Text('Select Category'),
-                                ),
-                                value: categoryID,
-                                items:
-                                    (selectedCategoryType == CategoryType.income
-                                            ? CategoryDB.instance
-                                                .incomeCategoryListListener
-                                            : CategoryDB.instance
-                                                .expenseCategoryListListener)
-                                        .value
-                                        .map(
-                                  (e) {
-                                    return DropdownMenuItem(
-                                      value: e.id,
-                                      child: Text(e.name),
-                                      onTap: () {
-                                        selectedCategoryModel = e;
-                                      },
-                                    );
-                                  },
-                                ).toList(),
-                                onChanged: (selectedValue) {
-                                  // print(selectedValue);
-                                  setState(() {
-                                    categoryID = selectedValue;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      SizedBox(
-                        height: 65,
-                        width: 60,
-                        child: Card(
-                          elevation: 3,
-                          child: IconButton(
-                            onPressed: () {
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: ((context) => const CategoryScreen())));
-                              showAddCategoryPopup(context);
+                      Consumer<AddTransactionProvider>(
+                          builder: (context, provider, child) {
+                        return ChoiceChip(
+                          padding: const EdgeInsets.all(8),
+                          label: const Text('Income'),
+                          // selected chip value
+                          selected: provider.value == 0,
+                          // onSelected method
+                          onSelected: (bool selected) {
+                            provider.incomeChoiceChip();
+                          },
+                        );
+                      }),
+                      Consumer<AddTransactionProvider>(
+                        builder: (context, provider, child) {
+                          return ChoiceChip(
+                            padding: const EdgeInsets.all(8),
+                            label: const Text('Expense'),
+                            // selected chip value
+                            selected: provider.value == 1,
+                            // onSelected method
+                            onSelected: (bool selected) {
+                              provider.expenseChoiceChip();
                             },
-                            icon: const Icon(Icons.add),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     ],
-                  ),
+                  );
+                }),
+              ),
 
-                  const SizedBox(
-                    height: 8,
-                  ),
+              SizedBox(
+                height: screenSize.width * 0.05,
+              ),
 
-                  //Calender select date
-
-                  SizedBox(
-                    height: 50,
-                    width: double.maxFinite,
-                    child: Card(
-                      elevation: 3,
-                      child: TextButton.icon(
-                        onPressed: () async {
-                          final selectedDateTemp = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now()
-                                .subtract(const Duration(days: 35)),
-                            lastDate: DateTime.now(),
-                          );
-                          if (selectedDateTemp == null) {
-                            return;
-                          } else {
-                            // print(selectedDateTemp.toString());
-                            setState(() {
-                              selectedDate = selectedDateTemp;
-                            });
-                          }
-                        },
-                        icon: const Icon(Icons.calendar_today),
-                        label: Text(
-                          selectedDate == null
-                              ? 'Select Date'
-                              : selectedDate!.toString().substring(0, 10),
-                        ),
+              //category type Dropdown
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'Category',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromARGB(255, 48, 63, 159),
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-
-                  //purpose
-                  Card(
-                    elevation: 3,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Enter Your Purpose';
-                          } else {
-                            return null;
-                          }
-                        },
-                        controller: purposeTextEditingController,
-                        decoration: const InputDecoration(
-                          focusedBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          hintText: 'Purpose',
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  //amount
-                  Card(
-                    elevation: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Enter Amount';
-                          } else {
-                            return null;
-                          }
-                        },
-                        controller: amountTextEditingController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          hintText: 'Amount',
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-
-                  Card(
-                    elevation: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: SizedBox(
-                        height: 150,
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter a note';
-                            } else {
-                              return null;
-                            }
-                          },
-                          maxLines: 10,
-                          controller: notesTextEditingController,
-                          decoration: const InputDecoration(
-                            focusedBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            hintText: 'Notes',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  //submit
-                  SizedBox(
-                    width: 500,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          await addTransaction();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  backgroundColor: Colors.green,
-                                  content: Text('Transaction Saved')));
-                        }
-
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: ((context) => const HomeScreen()),
-                          ),
-                        );
-                      },
-                      child: const Text('Done'),
                     ),
                   ),
                 ],
               ),
-            ),
+
+              Row(
+                children: [
+                  Consumer2<AddTransactionProvider, CategoryProvider>(
+                      builder: (context, tProvider, cProvider, _) {
+                    return SizedBox(
+                      height: screenSize.width * 0.18,
+                      width: screenSize.width * 0.7,
+                      child: Card(
+                        elevation: 3,
+                        child: DropdownButtonHideUnderline(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DropdownButton(
+                              hint: const Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Text('Select Category'),
+                              ),
+                              value: tProvider.categoryID,
+                              items: (tProvider.selectedCategoryType ==
+                                          CategoryType.income
+                                      ? cProvider.incomeCategoryProvider
+                                      : cProvider.expenseCategoryProvider)
+                                  .map(
+                                (e) {
+                                  return DropdownMenuItem(
+                                    value: e.id,
+                                    child: Text(
+                                      e.name,
+                                    ),
+                                    onTap: () {
+                                      Provider.of<CategoryProvider>(context,
+                                              listen: false)
+                                          .refreshUiCategory();
+                                      tProvider.selectedCategoryModel = e;
+                                    },
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (selectedValue) {
+                                // print(selectedValue);
+                                tProvider.categoryID = selectedValue;
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                  SizedBox(
+                    width: screenSize.width * 0.02,
+                  ),
+                  SizedBox(
+                    height: screenSize.width * 0.18,
+                    width: screenSize.width * 0.17,
+                    child: Card(
+                      elevation: 3,
+                      child: IconButton(
+                        onPressed: () {
+                          showAddCategoryPopup(context);
+                        },
+                        icon: const Icon(Icons.add),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(
+                height: screenSize.width * 0.02,
+              ),
+
+              //Calender select date
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'Select date',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 48, 63, 159),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Consumer<AddTransactionProvider>(builder: (context, provider, _) {
+                return SizedBox(
+                  height: screenSize.width * 0.15,
+                  width: double.maxFinite,
+                  child: Card(
+                    elevation: 3,
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        final selectedDateTemp = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate:
+                              DateTime.now().subtract(const Duration(days: 35)),
+                          lastDate: DateTime.now(),
+                        );
+                        provider.dateSelection(selectedDateTemp);
+                      },
+                      icon: const Icon(Icons.calendar_today),
+                      label: Text(
+                        provider.selectedDate == null
+                            ? 'Select Date'
+                            : provider.selectedDate.toString().substring(0, 10),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+              SizedBox(
+                height: screenSize.width * 0.02,
+              ),
+
+              //purpose
+
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'Notes',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          color: Color.fromARGB(255, 48, 63, 159)),
+                    ),
+                  ),
+                ],
+              ),
+
+              Card(
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: TextField(
+                    autofocus: false,
+                    controller: _purposeTextEditingController,
+                    decoration: const InputDecoration(
+                      focusedBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      hintText: 'Enter your Purpose',
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: screenSize.width * 0.02,
+              ),
+
+              //amount
+
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'Amount',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Color.fromARGB(255, 48, 63, 159),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Card(
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: TextFormField(
+                    controller: _amountTextEditingController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      hintText: 'Enter amount',
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: screenSize.width * 0.05,
+              ),
+
+              // Card(
+              //   elevation: 3,
+              //   child: Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 10),
+              //     child: SizedBox(
+              //       height: screenSize.width * 0.4,
+              //       child: TextFormField(
+              //         keyboardType: TextInputType.multiline,
+              //         minLines: 5,
+              //         maxLines: 5,
+              //         controller: _notesTextEditingController,
+              //         decoration: const InputDecoration(
+              //           focusedBorder: InputBorder.none,
+              //           disabledBorder: InputBorder.none,
+              //           enabledBorder: InputBorder.none,
+              //           hintText: 'Notes',
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              SizedBox(
+                height: screenSize.width * 0.02,
+              ),
+              //submit
+              SizedBox(
+                width: 500,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await addTransaction(context);
+
+
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ));
+                  },
+                  child: const Text('Done'),
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
-  Future<void> addTransaction() async {
-    final purposeText = purposeTextEditingController.text;
-    final amountText = amountTextEditingController.text;
-    final noteText = notesTextEditingController.text;
+  Future addTransaction(context) async {
+    final purposeText = _purposeTextEditingController.text;
+    final amountText = _amountTextEditingController.text;
     if (purposeText.isEmpty) {
       return;
     }
     if (amountText.isEmpty) {
       return;
     }
-    if (noteText.isEmpty) {
+
+    if (Provider.of<AddTransactionProvider>(context, listen: false)
+            .selectedDate ==
+        null) {
       return;
     }
 
-    // if (categoryID == null) {
-    //   return;
-    // }
-
-    if (selectedDate == null) {
-      return;
-    }
-
-    if (selectedCategoryModel == null) {
+    if (Provider.of<AddTransactionProvider>(context, listen: false)
+            .selectedCategoryModel ==
+        null) {
       return;
     }
     final parsedAmount = double.tryParse(amountText);
@@ -364,21 +379,24 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
       return;
     }
 
-    // selectedDate
-    // selectedCategoryType
-    // categoryID
-
     final model = TransactionModel(
-        purpose: purposeText,
-        amount: parsedAmount,
-        notes: noteText,
-        date: selectedDate!,
-        type: selectedCategoryType!,
-        category: selectedCategoryModel!,
-        id: DateTime.now().millisecondsSinceEpoch.toString());
+      purpose: purposeText,
+      amount: parsedAmount,
+      date: Provider.of<AddTransactionProvider>(context, listen: false)
+          .selectedDate,
+      type: Provider.of<AddTransactionProvider>(context, listen: false)
+          .selectedCategoryType!,
+      category: Provider.of<AddTransactionProvider>(context, listen: false)
+          .selectedCategoryModel!,
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+    );
 
-    TransactionDB.instance.addTransaction(model);
-    TransactionDB.instance.refresh();
-    CategoryDB.instance.refreshUI();
+    await Provider.of<TransactionProvider>(context, listen: false)
+        .addTransaction(model);
+    Provider.of<TransactionProvider>(context, listen: false)
+        .refreshUiTransaction();
+    Provider.of<CategoryProvider>(context, listen: false).refreshUiCategory();
+    Navigator.of(context).pop();
   }
 }
+

@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
-import 'package:wallet_app/db/db_transaction/transaction_db.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet_app/provider/transaction_provider.dart';
 import 'package:wallet_app/screens/Pie_chart/expenses/expense_chart.dart';
 import 'package:wallet_app/screens/Pie_chart/overAll/graph_over_view.dart';
 import 'package:wallet_app/screens/Pie_chart/income/income_chart.dart';
 
-class PieChartAll extends StatefulWidget {
+class PieChartAll extends StatelessWidget {
   const PieChartAll({super.key});
 
   @override
-  State<PieChartAll> createState() => _PieChartAllState();
-}
-
-class _PieChartAllState extends State<PieChartAll> {
-  String dateFilterTitle = "All";
-  @override
-  void initState() {
-    overViewGraphNotifier.value =
-        TransactionDB.instance.transactionListNotifier.value;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<TransactionProvider>().overviewGraphTransactions =
+          context.read<TransactionProvider>().transactionListProvider,
+    );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -34,99 +26,88 @@ class _PieChartAllState extends State<PieChartAll> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              PopupMenuButton<int>(
-                shape: ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    50,
+              Consumer<TransactionProvider>(builder: (context, value, _) {
+                return PopupMenuButton<int>(
+                  shape: ContinuousRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      50,
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    right: 15,
-                  ),
-                  child: Row(
-                    children: const [
+                  child: const Row(
+                    children: [
                       Text(''),
-                      Icon(
-                        Icons.sort,
-                        size: 30,
-                      ),
                     ],
                   ),
-                ),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 1,
-                    child: const Text(
-                      'All',
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: const Text(
+                        'All',
+                      ),
+                      onTap: () {
+                        value.setOverViewGraphTransactions =
+                            value.transactionListProvider;
+                        value.dateFilterTitle = "All";
+                      },
                     ),
-                    onTap: () {
-                      overViewGraphNotifier.value =
-                          TransactionDB.instance.transactionListNotifier.value;
-                      setState(() {
-                        dateFilterTitle = "All";
-                      });
-                    },
-                  ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: const Text(
-                      'Today',
+                    PopupMenuItem(
+                      value: 2,
+                      child: const Text(
+                        'Today',
+                      ),
+                      onTap: () {
+                        value.setOverViewGraphTransactions =
+                            value.transactionListProvider;
+                        value.setOverViewGraphTransactions = value
+                            .overviewGraphTransactions
+                            .where((element) =>
+                                element.date.day == DateTime.now().day &&
+                                element.date.month == DateTime.now().month &&
+                                element.date.year == DateTime.now().year)
+                            .toList();
+                        value.dateFilterTitle = "Today";
+                      },
                     ),
-                    onTap: () {
-                      overViewGraphNotifier.value =
-                          TransactionDB.instance.transactionListNotifier.value;
-                      overViewGraphNotifier.value = overViewGraphNotifier.value
-                          .where((element) =>
-                              element.date.day == DateTime.now().day &&
-                              element.date.month == DateTime.now().month &&
-                              element.date.year == DateTime.now().year)
-                          .toList();
-                      setState(() {
-                        dateFilterTitle = "Today";
-                      });
-                    },
-                  ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: const Text(
-                      'Yesterday',
-                    ),
-                    onTap: () {
-                      overViewGraphNotifier.value =
-                          TransactionDB.instance.transactionListNotifier.value;
-                      overViewGraphNotifier.value = overViewGraphNotifier.value
-                          .where((element) =>
-                              element.date.day == DateTime.now().day - 1 &&
-                              element.date.month == DateTime.now().month &&
-                              element.date.year == DateTime.now().year)
-                          .toList();
-                      setState(() {
-                        dateFilterTitle = "Yesterday";
-                      });
-                    },
-                  ),
-                  PopupMenuItem(
-                    value: 2,
-                    child: const Text(
-                      'This Month',
-                    ),
-                    onTap: () {
-                      overViewGraphNotifier.value =
-                          TransactionDB.instance.transactionListNotifier.value;
+                    PopupMenuItem(
+                      value: 2,
+                      child: const Text(
+                        'Yesterday',
+                      ),
+                      onTap: () {
+                        value.setOverViewGraphTransactions =
+                            value.transactionListProvider;
+                        value.setOverViewGraphTransactions = value
+                            .overviewGraphTransactions
+                            .where((element) =>
+                                element.date.day == DateTime.now().day - 1 &&
+                                element.date.month == DateTime.now().month &&
+                                element.date.year == DateTime.now().year)
+                            .toList();
 
-                      overViewGraphNotifier.value = overViewGraphNotifier.value
-                          .where((element) =>
-                              element.date.month == DateTime.now().month &&
-                              element.date.year == DateTime.now().year)
-                          .toList();
-                      setState(() {
-                        dateFilterTitle = "Month";
-                      });
-                    },
-                  ),
-                ],
-              )
+                        value.dateFilterTitle = "Yesterday";
+                      },
+                    ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: const Text(
+                        'This Month',
+                      ),
+                      onTap: () {
+                        value.setOverViewGraphTransactions =
+                            value.transactionListProvider;
+                        value.setOverViewGraphTransactions = value
+                            .overviewGraphTransactions
+                            .where((element) =>
+                                element.date.month == DateTime.now().month &&
+                                element.date.year == DateTime.now().year)
+                            .toList();
+
+                        value.dateFilterTitle = "Month";
+                      },
+                    ),
+                  ],
+                );
+              })
             ],
           ),
         ],
@@ -150,6 +131,7 @@ class _PieChartAllState extends State<PieChartAll> {
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 40),
                         tabs: const [
+                          
                           Tab(
                             iconMargin: EdgeInsets.all(30),
                             text: 'All',
@@ -161,10 +143,11 @@ class _PieChartAllState extends State<PieChartAll> {
                           Tab(
                             iconMargin: EdgeInsets.all(30),
                             text: 'Expense',
+                            
                           ),
                         ]),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: TabBarView(
                       children: [
                         GraphOverView(),

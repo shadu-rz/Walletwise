@@ -9,10 +9,10 @@ class ScreenTermsAndConditions extends StatelessWidget {
       appBar: AppBar(),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 height: 150,
                 width: double.maxFinite,
                 // color: Colors.blue,
@@ -21,7 +21,7 @@ class ScreenTermsAndConditions extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
+                    SizedBox(
                       // color: Colors.amber,
                       height: 100,
                       // color: Colors.amber,
@@ -37,9 +37,9 @@ class ScreenTermsAndConditions extends StatelessWidget {
                           const SizedBox(
                             width: 20,
                           ),
-                          Column(
+                          const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Text(
                                 'Terms Of Service',
                                 style: TextStyle(
@@ -56,14 +56,14 @@ class ScreenTermsAndConditions extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
+              const SizedBox(
                 height: 150,
                 width: double.maxFinite,
                 // color: Colors.blue,
                 child: Column(children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         '1 - Terms and Conditions',
                         style: TextStyle(
@@ -71,21 +71,21 @@ class ScreenTermsAndConditions extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
+                  Text(
                     'You agree that by accessing the Site, you have read, understood, and agree to be bound by all of these Terms of Service. If you do not agree with all of these Terms of Service, then you are expressly prohibited from using the Site and you must discontinue use immediately.',
                     style: TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.black54),
                   )
                 ]),
               ),
-              Container(
+              const SizedBox(
                 height: 180,
                 width: double.maxFinite,
                 // color: Colors.blue,
                 child: Column(children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         '2 - Privacy Policy',
                         style: TextStyle(
@@ -93,10 +93,12 @@ class ScreenTermsAndConditions extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Text(
+                  Text(
                     'You can use our services in a variety of ways to manage your privacy. For example, you can sign up for a Google Account if you want to create and manage content like emails and photos, or see more relevant search results. And you can use many Google services when you’re signed out or without creating an account at all, like searching on Google or watching YouTube videos',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black54),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
                   )
                 ]),
               ),

@@ -1,89 +1,89 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:wallet_app/db/db_category/category_db.dart';
-import 'package:wallet_app/db/db_transaction/income_and_expense.dart';
-import 'package:wallet_app/models/transactions/transaction_model.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:wallet_app/models/transactions/transaction_model.dart';
 
-const transactionDbName = 'transaction-db';
+// const transactionDbName = 'transaction-db';
 
-abstract class TransactionDbFunctions {
-  Future<void> addTransaction(TransactionModel obj);
-  Future<List<TransactionModel>> getAllTransactions();
-  Future<void> deleteTransaction(String id);
-  Future<void> deleteAllTransaction();
-  Future<void> editTransaction(TransactionModel value);
-  Future<void> refreshTransAndCat();
-}
+// abstract class TransactionDbFunctions {
+  // Future<void> addTransaction(TransactionModel obj);
+  // Future<List<TransactionModel>> getAllTransactions();
+  // Future<void> deleteTransaction(String id);
+  // Future<void> deleteAllTransaction();
+  // Future<void> editTransaction(TransactionModel value);
+  // Future<void> refreshTransAndCat();
+// }
 
-class TransactionDB implements TransactionDbFunctions {
-  TransactionDB._internal();
+// class TransactionDB implements TransactionDbFunctions {
+//   TransactionDB._internal();
 
-  static TransactionDB instance = TransactionDB._internal();
+//   static TransactionDB instance = TransactionDB._internal();
 
-  factory TransactionDB() {
-    return instance;
-  }
+//   factory TransactionDB() {
+//     return instance;
+//   }
 
-  ValueNotifier<List<TransactionModel>> transactionListNotifier =
-      ValueNotifier([]);
-  ValueNotifier<List<TransactionModel>> transactionFilterNotifier =
-      ValueNotifier([]);
+  // ValueNotifier<List<TransactionModel>> transactionListNotifier =
+  //     ValueNotifier([]);
+  // ValueNotifier<List<TransactionModel>> transactionFilterNotifier =
+  //     ValueNotifier([]);
 
-  @override
-  Future<void> addTransaction(TransactionModel obj) async {
-    final db = await Hive.openBox<TransactionModel>(transactionDbName);
-    await db.put(obj.id, obj);
-  }
+  // @override
+  // Future<void> addTransaction(TransactionModel obj) async {
+  //   final db = await Hive.openBox<TransactionModel>(transactionDbName);
+  //   await db.put(obj.id, obj);
+  // }
 
-  Future<void> refresh() async {
-    final list = await getAllTransactions();
+  // Future<void> refreshUiTransaction() async {
+  //   final list = await getAllTransactions();
 
-    list.sort((first, second) => second.date.compareTo(first.date));
+  //   list.sort((first, second) => second.date.compareTo(first.date));
 
-    transactionListNotifier.value.clear();
-    transactionFilterNotifier.value.clear();
+  //   transactionListNotifier.value.clear();
+  //   transactionFilterNotifier.value.clear();
 
-    transactionListNotifier.value.addAll(list);
-    transactionFilterNotifier.value.addAll(list);
+  //   transactionListNotifier.value.addAll(list);
+  //   transactionFilterNotifier.value.addAll(list);
 
-    transactionListNotifier.notifyListeners();
-    transactionFilterNotifier.notifyListeners();
+  //   // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+  //   transactionListNotifier.notifyListeners();
+  //   // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+  //   transactionFilterNotifier.notifyListeners();
 
-    incomeAndExpense();
-  }
+  //   incomeAndExpense();
+  // }
 
-  @override
-  Future<List<TransactionModel>> getAllTransactions() async {
-    final db = await Hive.openBox<TransactionModel>(transactionDbName);
-    return db.values.toList();
-  }
+  // @override
+  // Future<List<TransactionModel>> getAllTransactions() async {
+  //   final db = await Hive.openBox<TransactionModel>(transactionDbName);
+  //   return db.values.toList();
+  // }
 
-  @override
-  Future<void> deleteTransaction(String id) async {
-    final db = await Hive.openBox<TransactionModel>(transactionDbName);
-    await db.delete(id);
-    refresh();
-  }
+  // @override
+  // Future<void> deleteTransaction(String id) async {
+  //   final db = await Hive.openBox<TransactionModel>(transactionDbName);
+  //   await db.delete(id);
+  //   refreshUiTransaction();
+  // }
 
-  @override
-  Future<void> editTransaction(TransactionModel value) async {
-    final db = await Hive.openBox<TransactionModel>(transactionDbName);
-    await db.put(value.id, value);
-    refresh();
-  }
+  // @override
+  // Future<void> editTransaction(TransactionModel value) async {
+  //   final db = await Hive.openBox<TransactionModel>(transactionDbName);
+  //   await db.put(value.id, value);
+  //   refreshUiTransaction();
+  // }
 
-  @override
-  Future<void> deleteAllTransaction() async {
-    final db = await Hive.openBox<TransactionModel>(transactionDbName);
-    await db.clear();
-    await db.close();
-    refresh();
-  }
+  // @override
+  // Future<void> deleteAllTransaction() async {
+  //   final db = await Hive.openBox<TransactionModel>(transactionDbName);
+  //   await db.clear();
+  //   await db.close();
+  //   refreshUiTransaction();
+  // }
+  // @override
+  // Future<void> refreshTransAndCat(context) async {
+  //   // CategoryDB.instance.refreshUiCategory();
+  //   Provider.of<CategoryProvider>(context,listen: false).refreshUiCategory();
 
-  @override
-  Future<void> refreshTransAndCat() async {
-    CategoryDB.instance.refreshUI();
-    TransactionDB.instance.refresh();
-  }
-}
+  //   TransactionDB.instance.refresh();
+  // }
+// }
