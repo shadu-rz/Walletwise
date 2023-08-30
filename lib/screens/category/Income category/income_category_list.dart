@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wallet_app/db/db_category/category_db.dart';
-import 'package:wallet_app/models/category/category_model.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:wallet_app/provider/category_provider.dart';
 import 'package:wallet_app/screens/category/Edit%20Category/edit_category_popup.dart';
 
 class IncomeCategoryList extends StatelessWidget {
@@ -9,12 +9,12 @@ class IncomeCategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: CategoryDB().incomeCategoryListListener,
-      builder: (BuildContext ctx, List<CategoryModel> newList, Widget? child) {
+    // final screenSize = MediaQuery.of(context).size;
+    return Consumer<CategoryProvider>(
+      builder: (ctx, provider, child) {
         return ListView.separated(
           itemBuilder: (context, index) {
-            final category = newList[index];
+            final category = provider.incomeCategoryProvider[index];
             return Slidable(
               key: Key(category.id),
               endActionPane: ActionPane(
@@ -54,8 +54,7 @@ class IncomeCategoryList extends StatelessWidget {
                                   ),
                                   TextButton(
                                     onPressed: (() {
-                                      CategoryDB.instance
-                                          .deleteCategory(category.id);
+                                      provider.deleteCategory(category.id);
                                       Navigator.of(context).pop();
                                     }),
                                     child: const Text(
@@ -79,6 +78,7 @@ class IncomeCategoryList extends StatelessWidget {
                 ],
               ),
               child: Card(
+                elevation: 5,
                 margin: const EdgeInsets.all(10),
                 color: Colors.green,
                 child: ListTile(
@@ -97,7 +97,7 @@ class IncomeCategoryList extends StatelessWidget {
               height: 0,
             );
           },
-          itemCount: newList.length,
+          itemCount: provider.incomeCategoryProvider.length,
         );
       },
     );

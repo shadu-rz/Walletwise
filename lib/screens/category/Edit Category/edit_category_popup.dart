@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:wallet_app/db/db_category/category_db.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_app/models/category/category_model.dart';
+import 'package:wallet_app/provider/category_provider.dart';
 
 ValueNotifier<CategoryType> selectedCategoryNotifier =
     ValueNotifier(CategoryType.income);
 
 Future<void> showEditCategoryPopup(BuildContext context) async {
   final nameEditingController = TextEditingController();
- 
+
   showDialog(
       context: context,
       builder: (ctx) {
@@ -38,21 +39,6 @@ Future<void> showEditCategoryPopup(BuildContext context) async {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: const [
-                  RadioButton(
-                    title: 'income',
-                    type: CategoryType.income,
-                  ),
-                  RadioButton(
-                    title: 'expense',
-                    type: CategoryType.expense,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
               padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(
                 onPressed: () async {
@@ -60,16 +46,17 @@ Future<void> showEditCategoryPopup(BuildContext context) async {
                   if (name.isEmpty) {
                     return;
                   }
-                  final _type = selectedCategoryNotifier.value;
+                  // final type = selectedCategoryNotifier.value;
 
-                  final category = CategoryModel(
-                    id: DateTime.now().microsecondsSinceEpoch.toString(),
-                    name: name,
-                    type: _type,
-                  );
-
-                  await CategoryDB.instance.insertCategory(category);
-                  await CategoryDB.instance.refreshUI();
+                  // final category = CategoryModel(
+                  //   id: DateTime.now().microsecondsSinceEpoch.toString(),
+                  //   name: name,
+                  //   type: type,
+                  // );
+                  // await CategoryDB.instance.refreshUiCategory();
+                  Provider.of<CategoryProvider>(context, listen: false)
+                      .refreshUiCategory();
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 },
                 child: const Text('Add'),
@@ -78,42 +65,4 @@ Future<void> showEditCategoryPopup(BuildContext context) async {
           ],
         );
       });
-}
-
-class RadioButton extends StatelessWidget {
-  final String title;
-  final CategoryType type;
-  const RadioButton({
-    super.key,
-    required this.title,
-    required this.type,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        ValueListenableBuilder(
-            valueListenable: selectedCategoryNotifier,
-            builder: (
-              BuildContext ctx,
-              CategoryType newCategory,
-              Widget? _,
-            ) {
-              return Radio<CategoryType>(
-                value: type,
-                groupValue: newCategory,
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  selectedCategoryNotifier.value = value;
-                  selectedCategoryNotifier.notifyListeners();
-                },
-              );
-            }),
-        Text(title),
-      ],
-    );
-  }
 }

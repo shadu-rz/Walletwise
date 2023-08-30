@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wallet_app/db/db_category/category_db.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_app/models/category/category_model.dart';
+import 'package:wallet_app/provider/category_provider.dart';
+import 'package:wallet_app/provider/transaction_provider.dart';
 
 ValueNotifier<CategoryType> selectedCategoryNotifier =
     ValueNotifier(CategoryType.income);
@@ -24,22 +26,25 @@ Future<void> showAddCategoryPopup(BuildContext context) async {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextFormField(
+                    maxLength: 15,
                     controller: nameEditingController,
                     decoration: const InputDecoration(
                       focusedBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       hintText: 'Category name',
+                      counterText: "",
                       border: OutlineInputBorder(),
                     ),
                   ),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
+            const Padding(
+              padding: EdgeInsets.all(20),
               child: Row(
-                children: const [
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   RadioButton(
                     title: 'income',
                     type: CategoryType.income,
@@ -59,16 +64,22 @@ Future<void> showAddCategoryPopup(BuildContext context) async {
                   if (name.isEmpty) {
                     return;
                   }
-                  final _type = selectedCategoryNotifier.value;
+                  final type = selectedCategoryNotifier.value;
 
                   final category = CategoryModel(
                     id: DateTime.now().microsecondsSinceEpoch.toString(),
                     name: name.toUpperCase(),
-                    type: _type,
+                    type: type,
                   );
 
-                  await CategoryDB.instance.insertCategory(category);
-                  await CategoryDB.instance.refreshUI();
+                  await Provider.of<CategoryProvider>(context, listen: false)
+                      .insertCategory(category);
+
+                  // ignore: use_build_context_synchronously
+                  context.read<CategoryProvider>().refreshUiCategory();
+                  // ignore: use_build_context_synchronously
+                  context.read<TransactionProvider>().refreshUiTransaction();
+
                   Navigator.of(context).pop();
                 },
                 child: const Text('Add'),
@@ -107,6 +118,7 @@ class RadioButton extends StatelessWidget {
                     return;
                   }
                   selectedCategoryNotifier.value = value;
+                  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
                   selectedCategoryNotifier.notifyListeners();
                 },
               );

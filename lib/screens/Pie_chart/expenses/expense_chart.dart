@@ -1,42 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/screens/Pie_chart/overAll/graph_over_view.dart';
+import 'package:wallet_app/provider/transaction_provider.dart';
 import '../../../models/transactions/transaction_model.dart';
 
-class ExpenseChart extends StatefulWidget {
-  const ExpenseChart({super.key});
+class ExpenseChart extends StatelessWidget {
+   ExpenseChart({super.key});
 
-  @override
-  State<ExpenseChart> createState() => _ExpenseChartState();
-}
 
-class _ExpenseChartState extends State<ExpenseChart> {
-  late TooltipBehavior _tooltipBehavior;
-  @override
-  void initState() {
-    _tooltipBehavior = TooltipBehavior(enable: true);
-    super.initState();
-  }
-
+ final TooltipBehavior tooltipBehavior = TooltipBehavior(enable: true);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: ValueListenableBuilder(
-          valueListenable: overViewGraphNotifier,
-          builder: (BuildContext context, List<TransactionModel> newList,
-              Widget? child) {
-            var allIncome = newList
+        body: Consumer<TransactionProvider>(
+          builder: (context, value, _) {
+            var allIncome = value.transactionListProvider
                 .where((element) => element.type == CategoryType.expense)
                 .toList();
-            return overViewGraphNotifier.value.isEmpty
-                ? SizedBox(
+            return value.overviewGraphTransactions. isEmpty
+                ? const SizedBox(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'No Data Found!!',
                             style: TextStyle(
@@ -50,7 +39,7 @@ class _ExpenseChartState extends State<ExpenseChart> {
                     ),
                   )
                 : SfCircularChart(
-                    tooltipBehavior: _tooltipBehavior,
+                    tooltipBehavior: tooltipBehavior,
                     series: <CircularSeries>[
                       DoughnutSeries<TransactionModel, String>(
                           dataSource: allIncome,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:wallet_app/db/db_category/category_db.dart';
-import 'package:wallet_app/models/category/category_model.dart';
+import 'package:provider/provider.dart';
+import 'package:wallet_app/provider/category_provider.dart';
 import 'package:wallet_app/screens/category/Edit%20Category/edit_category_popup.dart';
 
 class ExpenseCategoryList extends StatelessWidget {
@@ -9,12 +9,11 @@ class ExpenseCategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: CategoryDB().expenseCategoryListListener,
-      builder: (BuildContext ctx, List<CategoryModel> newList, Widget? _) {
+    return Consumer<CategoryProvider>(
+      builder: (ctx, provider, _) {
         return ListView.separated(
           itemBuilder: (context, index) {
-            final category = newList[index];
+            final category = provider.expenseCategoryProvider[index];
             return Slidable(
               key: Key(category.id),
               endActionPane: ActionPane(
@@ -54,8 +53,9 @@ class ExpenseCategoryList extends StatelessWidget {
                                   ),
                                   TextButton(
                                     onPressed: (() {
-                                      CategoryDB.instance
-                                          .deleteCategory(category.id);
+                                      // CategoryDB.instance
+                                      //     .deleteCategory(category.id);
+                                      provider.deleteCategory(category.id);
                                       Navigator.of(context).pop();
                                     }),
                                     child: const Text(
@@ -79,6 +79,7 @@ class ExpenseCategoryList extends StatelessWidget {
                 ],
               ),
               child: Card(
+                elevation: 5,
                 margin: const EdgeInsets.all(10),
                 color: Colors.red,
                 child: ListTile(
@@ -97,7 +98,7 @@ class ExpenseCategoryList extends StatelessWidget {
               height: 0,
             );
           },
-          itemCount: newList.length,
+          itemCount: provider.expenseCategoryProvider.length,
         );
       },
     );

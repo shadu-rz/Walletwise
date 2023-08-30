@@ -1,37 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:wallet_app/db/db_transaction/income_and_expense.dart';
+import 'package:provider/provider.dart';
 import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/db/db_transaction/transaction_db.dart';
-import 'package:wallet_app/screens/Pie_chart/overAll/graph_over_view.dart';
+import 'package:wallet_app/models/transactions/transaction_model.dart';
+import 'package:wallet_app/provider/category_provider.dart';
+import 'package:wallet_app/provider/transaction_provider.dart';
 import 'package:wallet_app/screens/Pie_chart/screen_pie_chart.dart';
-import 'package:wallet_app/screens/transaction/add/screen_add_transaction.dart';
-import 'package:wallet_app/screens/category/screen_category.dart';
+import 'package:wallet_app/screens/home/widgets/floating_action.dart';
 import 'package:wallet_app/screens/settings_screen/settings_screen.dart';
-import 'package:wallet_app/screens/transaction/search%20&%20view%20all%20transaction/screen_view_all_and_search.dart';
+import 'package:wallet_app/screens/transaction/edit/edit_trans.dart';
+import 'package:wallet_app/screens/transaction/view%20all%20transaction/view_all.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      incomeAndExpense();
-      overViewGraphNotifier.value =
-          TransactionDB.instance.transactionListNotifier.value;
-    });
-  }
-
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({
+    super.key,
+    // required this.transaction,
+  });
+  // final TransactionModel transaction;
   @override
   Widget build(BuildContext context) {
-    TransactionDB.instance.refreshTransAndCat();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<TransactionProvider>(context, listen: false)
+          .incomeAndExpense();
+      Provider.of<TransactionProvider>(context, listen: false)
+              .overviewGraphTransactions =
+          Provider.of<TransactionProvider>(context, listen: false)
+              .transactionListProvider;
+    });
+    final screenSize = MediaQuery.of(context).size;
+
+    Provider.of<CategoryProvider>(context, listen: false).refreshUiCategory();
+    Provider.of<TransactionProvider>(context, listen: false)
+        .refreshUiTransaction();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -42,70 +43,72 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    height: 80,
-                    // color: Colors.amber,
+                    height: screenSize.width * 0.2,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        SizedBox(
+                          width: screenSize.width * 0.05,
+                        ),
                         GestureDetector(
                           child: const CircleAvatar(
-                            child: Icon(Icons.menu),
+                            child: Icon(
+                              Icons.settings,
+                            ),
                           ),
                           onTap: () {
-                            return showMenuModalBottomSheet(context);
+                            // return showMenuModalBottomSheet(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ScreenSettings(),
+                              ),
+                            );
                           },
                         ),
-                        const SizedBox(
-                          width: 210,
+                        SizedBox(
+                          width: screenSize.width * 0.5,
                         ),
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6),
                             color: const Color.fromARGB(40, 0, 7, 72),
                           ),
-                          width: 103,
-                          height: 35,
+                          width: screenSize.width * 0.3,
+                          height: screenSize.width * 0.1,
                           // color: Colors.amber,
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children:  [
                               Text(
                                 'WalletApp',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
                                   color: Color.fromARGB(255, 0, 7, 72),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          width: 30,
-                        )
                       ],
                     ),
                   ),
                   SizedBox(
-                    width: double.infinity,
-                    height: 70,
-                    // color: Colors.lightBlue,
+                    height: screenSize.width * 0.2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        ValueListenableBuilder(
-                          valueListenable: totalBalance,
-                          builder:
-                              (BuildContext ctx, dynamic value, Widget? child) {
+                        Consumer<TransactionProvider>(
+                          builder: (ctx, value, child) {
                             return Column(
                               children: [
-                                totalBalance.value >= 0
+                                value.totalBalance >= 0
                                     ? const Text(
                                         'Balance',
                                         style: TextStyle(
-                                            fontSize: 21,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black54),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54,
+                                        ),
                                       )
                                     : const Text(
                                         'Loss',
@@ -114,9 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black54),
                                       ),
-                                totalBalance.value >= 0
+                                value.totalBalance >= 0
                                     ? Text(
-                                        '${totalBalance.value.abs().toString()} ₹',
+                                        '${value.totalBalance.abs().toString()} ₹',
                                         style: const TextStyle(
                                           fontSize: 28,
                                           fontWeight: FontWeight.w800,
@@ -124,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       )
                                     : Text(
-                                        '-${totalBalance.value.abs().toString()} ₹',
+                                        '-${value.totalBalance.abs().toString()} ₹',
                                         style: const TextStyle(
                                           fontSize: 28,
                                           fontWeight: FontWeight.w800,
@@ -142,10 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ValueListenableBuilder(
-                        valueListenable: incomeTotal,
-                        builder: (BuildContext context, dynamic value,
-                            Widget? child) {
+                      Consumer<TransactionProvider>(
+                        builder: (context, value, child) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -156,20 +157,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(15),
                                     color: Colors.green,
                                   ),
-                                  height: 90,
-                                  width: 150,
+                                  height: screenSize.width * 0.25,
+                                  width: screenSize.width * 0.4,
                                   child: Card(
                                     elevation: 10,
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Row(
+                                        const Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                          children: const [
+                                          children: [
                                             Icon(
                                               Icons.arrow_upward_rounded,
                                               color: Colors.green,
@@ -184,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ],
                                         ),
                                         Text(
-                                          '${incomeTotal.value} ₹',
+                                          '${value.incomeTotal} ₹',
                                           style: const TextStyle(
                                               fontSize: 22,
                                               fontWeight: FontWeight.bold,
@@ -199,56 +200,52 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       ),
-                      const SizedBox(
-                        width: 20,
+                      SizedBox(
+                        width: screenSize.width * 0.03,
                       ),
-                      ValueListenableBuilder(
-                          valueListenable: expenseTotal,
-                          builder: (BuildContext context, dynamic value,
-                              Widget? child) {
-                            return Container(
-                              height: 90,
-                              width: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.red,
-                              ),
-                              child: Card(
-                                elevation: 5,
-                                child: Column(
+                      Consumer<TransactionProvider>(
+                          builder: (context, value, _) {
+                        return Container(
+                          height: screenSize.width * 0.25,
+                          width: screenSize.width * 0.4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.red,
+                          ),
+                          child: Card(
+                            elevation: 5,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: const [
-                                        Icon(
-                                          Icons.arrow_downward_rounded,
-                                          color: Colors.red,
-                                        ),
-                                        Text(
-                                          'Expense',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.red),
-                                        )
-                                      ],
+                                    Icon(
+                                      Icons.arrow_downward_rounded,
+                                      color: Colors.red,
                                     ),
                                     Text(
-                                      '${expenseTotal.value} ₹',
-                                      style: const TextStyle(
-                                          fontSize: 22,
+                                      'Expense',
+                                      style: TextStyle(
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.red),
                                     )
                                   ],
                                 ),
-                              ),
-                            );
-                          })
+                                Text(
+                                  '${value.expenseTotal} ₹',
+                                  style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      })
                     ],
                   ),
                   Padding(
@@ -258,10 +255,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                  child: SizedBox(
-                                height: 40,
+                              SizedBox(
+                                height: screenSize.width * 0.1,
                                 child: ElevatedButton.icon(
                                   onPressed: () {
                                     Navigator.of(context).push(
@@ -275,35 +272,53 @@ class _HomeScreenState extends State<HomeScreen> {
                                   label: const Text('Statistics'),
                                 ),
                                 // color: Colors.amber,
-                              )),
-                              const Expanded(
-                                  child: SizedBox(
-                                height: 40,
-                                child: Text(
-                                  'Recent Transactions',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black45,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 15,
-                                  ),
+                              ),
+                              SizedBox(
+                                height: screenSize.width * 0.11,
+                                child: const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Transactions',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black45,
+                                        
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 // color: Colors.blue,
-                              )),
-                              Expanded(
-                                child: SizedBox(
-                                  height: 40,
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      showSearch(
-                                          context: context,
-                                          delegate: SearchWidget());
-                                    },
-                                    icon: const Icon(Icons.grid_view_rounded),
-                                    label: const Text('View all'),
-                                  ),
-                                  // color: Colors.pink,
+                              ),
+                              SizedBox(
+                                height: screenSize.width * 0.11,
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    // showSearch(
+                                    //   context: context,
+                                    //   delegate: SearchWidget(),
+                                    // );
+                                    context
+                                            .read<TransactionProvider>()
+                                            .overviewTransactions =
+                                        Provider.of<TransactionProvider>(
+                                                context,
+                                                listen: false)
+                                            .transactionListProvider;
+                                    context
+                                        .read<TransactionProvider>()
+                                        .notifyListeners();
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => const ViewAll(),
+                                    ));
+                                  },
+                                  icon: const Icon(Icons.search),
+                                  label: const Text('Search'),
                                 ),
+                                // color: Colors.pink,
                               ),
                             ],
                           ),
@@ -314,19 +329,107 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               SizedBox(
-                // color: Colors.amber,
-                height: 370,
-                child: ValueListenableBuilder(
-                  valueListenable:
-                      TransactionDB.instance.transactionListNotifier,
-                  builder: (ctx, newList, Widget? _) {
-                    return newList.isNotEmpty
+                // color: Colors.blue,
+                height: screenSize.height * 0.6,
+                child: Consumer<TransactionProvider>(
+                  builder: (ctx, provider, Widget? _) {
+                    return provider.transactionListProvider.isNotEmpty
                         ? ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            // physics: const NeverScrollableScrollPhysics(),
                             padding: const EdgeInsets.all(10),
                             itemBuilder: (ctx, index) {
-                              final value = newList[index];
+                              final value =
+                                  provider.transactionListProvider[index];
+                              final editValue = TransactionModel(
+                                id: value.id,
+                                purpose: value.purpose,
+                                amount: value.amount,
+                                date: value.date,
+                                type: value.type,
+                                category: value.category,
+                              );
                               return Slidable(
+                                endActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    //    EDIT  ICON
+
+                                    SlidableAction(
+                                      icon: Icons.edit,
+                                      label: 'edit',
+                                      onPressed: (context) {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: ((context) =>
+                                                EditTransaction(
+                                                  obj: editValue,
+                                                )),
+                                          ),
+                                        );
+                                      },
+                                    ),
+
+                                    // DELETE   ICON
+
+                                    SlidableAction(
+                                      onPressed: ((context) {
+                                        showDialog(
+                                          context: context,
+                                          builder: ((context) {
+                                            return AlertDialog(
+                                              content: const Text(
+                                                'Do you want to Delete',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: (() {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                      child: const Text(
+                                                        'No',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: (() {
+                                                        provider
+                                                            .deleteTransaction(
+                                                                value);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                      child: const Text(
+                                                        'Yes',
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            );
+                                          }),
+                                        );
+                                      }),
+                                      icon: Icons.delete,
+                                      foregroundColor: Colors.red,
+                                      label: 'Delete',
+                                    ),
+                                  ],
+                                ),
                                 key: Key(value.id!),
                                 child: Card(
                                   color: value.type == CategoryType.income
@@ -372,19 +475,19 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                             separatorBuilder: (ctx, index) {
-                              return const SizedBox(
-                                height: 10,
+                              return SizedBox(
+                                height: screenSize.width * 0.01,
                               );
                             },
-                            itemCount: newList.length,
+                            itemCount: provider.transactionListProvider.length,
                           )
-                        : SizedBox(
+                        : const SizedBox(
                             child: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 130),
+                                  EdgeInsets.symmetric(vertical: 130),
                               child: Column(
                                 // mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Text(
                                     'No Data Transactions Found!!',
                                     style: TextStyle(
@@ -404,119 +507,41 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-        child: FloatingActionButton.extended(
-          label: const Text('Add Transaction'),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: ((context) => const ScreenAddTransaction()),
-              ),
-            );
-          },
-          // backgroundColor: const Color.fromARGB(255, 0, 7, 72),
-          // foregroundColor: Colors.white,
-          icon: const Icon(Icons.add),
-        ),
-      ),
+      floatingActionButton: const FloatingActionHomeScreen(),
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 0),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       const SizedBox(width: 10),
+      //       FloatingActionButton.extended(
+      //         label: const Text('Category'),
+      //         onPressed: () {
+      //           Navigator.of(context).push(MaterialPageRoute(
+      //             builder: (context) => const CategoryScreen(),
+      //           ));
+      //         },
+      //         // child: const Text('Category'),
+      //       ),
+      //       // const Spacer(),
+      //       FloatingActionButton.extended(
+      //         onPressed: () {
+      //           Navigator.of(context).push(MaterialPageRoute(
+      //             builder: (context) => ScreenAddTransaction(),
+      //           ));
+      //         },
+      //         label: const Text('Add Transaction'),
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 
   String parseDate(DateTime date) {
-    final _date = DateFormat.MMMd().format(date);
-    final _splitedDate = _date.split(' ');
-    return '${_splitedDate.last}\n${_splitedDate.first}';
+    final date0 = DateFormat.MMMd().format(date);
+    final splitedDate = date0.split(' ');
+    return '${splitedDate.last}\n${splitedDate.first}';
     // return '${date.day}\n${date.month}';
-  }
-
-  void showMenuModalBottomSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(0)),
-              color: Colors.blueGrey[900],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const Text(
-                  'WalletApp',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(
-                          Icons.home,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                                builder: ((context) =>
-                                    const CategoryScreen()))),
-                        child: Container(
-                          width: 120,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Text(
-                            'CATEGORY',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.blueGrey[900],
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: ((context) => ScreenSettings()),
-                            ),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.settings,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 70,
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
   }
 }

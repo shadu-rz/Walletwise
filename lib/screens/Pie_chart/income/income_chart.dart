@@ -1,43 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/screens/Pie_chart/overAll/graph_over_view.dart';
+import 'package:wallet_app/provider/transaction_provider.dart';
 
 import '../../../models/transactions/transaction_model.dart';
 
-class IncomeChart extends StatefulWidget {
-  const IncomeChart({super.key});
+class IncomeChart extends StatelessWidget {
+   IncomeChart({super.key});
+ final TooltipBehavior tooltipBehavior = TooltipBehavior(enable: true);
+//   @override
+//   State<IncomeChart> createState() => _IncomeChartState();
+// }
 
-  @override
-  State<IncomeChart> createState() => _IncomeChartState();
-}
-
-class _IncomeChartState extends State<IncomeChart> {
-  late TooltipBehavior _tooltipBehavior;
-  @override
-  void initState() {
-    _tooltipBehavior = TooltipBehavior(enable: true);
-    super.initState();
-  }
+// class _IncomeChartState extends State<IncomeChart> {
+//   late TooltipBehavior _tooltipBehavior;
+//   @override
+//   void initState() {
+//     _tooltipBehavior = TooltipBehavior(enable: true);
+//     super.initState();
+//   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: ValueListenableBuilder(
-          valueListenable: overViewGraphNotifier,
-          builder: (BuildContext context, List<TransactionModel> newList,
-              Widget? child) {
-            var allIncome = newList
+        body: Consumer<TransactionProvider>(
+          builder: ( context, value, _) {
+            var allIncome = value.transactionListProvider
                 .where((element) => element.type == CategoryType.income)
                 .toList();
-            return overViewGraphNotifier.value.isEmpty
-                ? SizedBox(
+            return value.overviewGraphTransactions.isEmpty
+                ? const SizedBox(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'No Data Found!!',
                             style: TextStyle(
@@ -51,7 +50,7 @@ class _IncomeChartState extends State<IncomeChart> {
                     ),
                   )
                 : SfCircularChart(
-                    tooltipBehavior: _tooltipBehavior,
+                    tooltipBehavior: tooltipBehavior,
                     series: <CircularSeries>[
                       DoughnutSeries<TransactionModel, String>(
                         enableTooltip: true,
