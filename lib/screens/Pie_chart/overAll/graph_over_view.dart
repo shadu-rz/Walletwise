@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wallet_app/provider/transaction_provider.dart';
 
-
 class GraphOverView extends StatelessWidget {
-   GraphOverView({super.key});
+  GraphOverView({super.key});
 
- final TooltipBehavior tooltipBehavior = TooltipBehavior(enable: true);
+  final TooltipBehavior tooltipBehavior = TooltipBehavior(enable: true);
   @override
   Widget build(BuildContext context) {
-   
     return SafeArea(
       child: Scaffold(
         body: Consumer<TransactionProvider>(
-          builder: (BuildContext context,  value,
-              Widget? child) {
+          builder: (BuildContext context, value, Widget? child) {
             Map incomeMap = {'name': 'Income', "amount": value.incomeTotal};
             Map expenseMap = {"name": "Expense", "amount": value.expenseTotal};
             List<Map> totalMap = [incomeMap, expenseMap];
             return value.overviewGraphTransactions.isEmpty
-                ? const SizedBox(
+                ? SizedBox(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            'No Data Found!!',
+                          Lottie.asset(
+                            'assets/lotties/animation_ln4pztav.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.fill,
+                          ),
+                          const Text(
+                            'No data found',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.red,
-                            ),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey),
                           )
                         ],
                       ),
@@ -46,7 +48,6 @@ class GraphOverView extends StatelessWidget {
                         xValueMapper: (Map data, _) => data['name'],
                         yValueMapper: (Map data, _) => data['amount'],
                         dataLabelSettings: const DataLabelSettings(
-                          
                           isVisible: true,
                           textStyle: TextStyle(
                               fontSize: 15,

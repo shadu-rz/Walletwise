@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wallet_app/models/category/category_model.dart';
@@ -20,19 +21,23 @@ class ExpenseChart extends StatelessWidget {
                 .where((element) => element.type == CategoryType.expense)
                 .toList();
             return value.overviewGraphTransactions. isEmpty
-                ? const SizedBox(
+                ?  SizedBox(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            'No Data Found!!',
+                          Lottie.asset(
+                            'assets/lotties/animation_ln4pztav.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.fill,
+                          ),
+                          const Text(
+                            'No data found',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.red,
-                            ),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey),
                           )
                         ],
                       ),

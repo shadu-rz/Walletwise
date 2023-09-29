@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:wallet_app/models/category/category_model.dart';
@@ -9,17 +10,6 @@ import '../../../models/transactions/transaction_model.dart';
 class IncomeChart extends StatelessWidget {
    IncomeChart({super.key});
  final TooltipBehavior tooltipBehavior = TooltipBehavior(enable: true);
-//   @override
-//   State<IncomeChart> createState() => _IncomeChartState();
-// }
-
-// class _IncomeChartState extends State<IncomeChart> {
-//   late TooltipBehavior _tooltipBehavior;
-//   @override
-//   void initState() {
-//     _tooltipBehavior = TooltipBehavior(enable: true);
-//     super.initState();
-//   }
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +21,23 @@ class IncomeChart extends StatelessWidget {
                 .where((element) => element.type == CategoryType.income)
                 .toList();
             return value.overviewGraphTransactions.isEmpty
-                ? const SizedBox(
+                ?  SizedBox(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            'No Data Found!!',
+                         Lottie.asset(
+                            'assets/lotties/animation_ln4pztav.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.fill,
+                          ),
+                          const Text(
+                            'No data found',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.red,
-                            ),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey),
                           )
                         ],
                       ),

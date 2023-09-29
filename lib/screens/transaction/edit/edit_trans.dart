@@ -10,6 +10,7 @@ import 'package:wallet_app/provider/add_transaction_provider.dart';
 import 'package:wallet_app/provider/category_provider.dart';
 import 'package:wallet_app/provider/transaction_provider.dart';
 
+// ignore: must_be_immutable
 class EditTransaction extends StatelessWidget {
   EditTransaction({
     Key? key,

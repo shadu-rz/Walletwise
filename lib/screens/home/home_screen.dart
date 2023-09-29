@@ -11,6 +11,7 @@ import 'package:wallet_app/screens/home/widgets/floating_action.dart';
 import 'package:wallet_app/screens/settings_screen/settings_screen.dart';
 import 'package:wallet_app/screens/transaction/edit/edit_trans.dart';
 import 'package:wallet_app/screens/transaction/view%20all%20transaction/view_all.dart';
+import 'package:lottie/lottie.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -77,9 +78,9 @@ class HomeScreen extends StatelessWidget {
                           // color: Colors.amber,
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children:  [
+                            children: [
                               Text(
-                                'WalletApp',
+                                'Walletwise',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 18,
@@ -155,7 +156,7 @@ class HomeScreen extends StatelessWidget {
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: Colors.green,
+                                    color: Colors.white,
                                   ),
                                   height: screenSize.width * 0.25,
                                   width: screenSize.width * 0.4,
@@ -210,10 +211,10 @@ class HomeScreen extends StatelessWidget {
                           width: screenSize.width * 0.4,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.red,
+                            color: Colors.white,
                           ),
                           child: Card(
-                            elevation: 5,
+                            elevation: 10,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -283,7 +284,6 @@ class HomeScreen extends StatelessWidget {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         color: Colors.black45,
-                                        
                                         fontWeight: FontWeight.w700,
                                         fontSize: 16,
                                       ),
@@ -329,7 +329,6 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(
-                // color: Colors.blue,
                 height: screenSize.height * 0.6,
                 child: Consumer<TransactionProvider>(
                   builder: (ctx, provider, Widget? _) {
@@ -481,22 +480,15 @@ class HomeScreen extends StatelessWidget {
                             },
                             itemCount: provider.transactionListProvider.length,
                           )
-                        : const SizedBox(
+                        : SizedBox(
                             child: Padding(
                               padding:
-                                  EdgeInsets.symmetric(vertical: 130),
-                              child: Column(
-                                // mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'No Data Transactions Found!!',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                ],
+                                  const EdgeInsets.symmetric(vertical: 120),
+                              child: Lottie.asset(
+                                'assets/lotties/animation_ln4pztav.json',
+                                width: 200,
+                                height: 200,
+                                fit: BoxFit.fill,
                               ),
                             ),
                           );
@@ -508,33 +500,6 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: const FloatingActionHomeScreen(),
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 0),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [
-      //       const SizedBox(width: 10),
-      //       FloatingActionButton.extended(
-      //         label: const Text('Category'),
-      //         onPressed: () {
-      //           Navigator.of(context).push(MaterialPageRoute(
-      //             builder: (context) => const CategoryScreen(),
-      //           ));
-      //         },
-      //         // child: const Text('Category'),
-      //       ),
-      //       // const Spacer(),
-      //       FloatingActionButton.extended(
-      //         onPressed: () {
-      //           Navigator.of(context).push(MaterialPageRoute(
-      //             builder: (context) => ScreenAddTransaction(),
-      //           ));
-      //         },
-      //         label: const Text('Add Transaction'),
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 
