@@ -74,14 +74,14 @@ class ScreenSettings extends StatelessWidget {
                   child: const Card(
                     child: ListTile(
                       leading: Icon(Icons.my_library_books),
-                      title: Text('Terms and Privacy Policy'),
+                      title: Text('Privacy Policy'),
                     ),
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
                     Share.share(
-                      'https://play.google.com/store/apps/details?id=com.shadu.walletapp',
+                      'https://play.google.com/store/apps/details?id=com.shadu.Walletwise',
                     );
                   },
                   child: const Card(
@@ -165,12 +165,12 @@ class ScreenSettings extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: screenSize.height * 0.38,
+                  height: screenSize.height * 0.4,
                   child: const Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        'WalletApp',
+                        'Walletwise 1.2.0',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black38,

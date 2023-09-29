@@ -22,7 +22,7 @@ class AnimatedTextWidget extends StatelessWidget {
       child: AnimatedTextKit(
         animatedTexts: [
           ColorizeAnimatedText(
-            'WALLET APP',
+            'WALLETWISE',
             textStyle: colorizeTextStyle,
             colors: colorizeColors,
           ),

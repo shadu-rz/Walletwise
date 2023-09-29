@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:wallet_app/models/category/category_model.dart';
 import 'package:wallet_app/models/transactions/transaction_model.dart';
@@ -41,15 +42,24 @@ class TransactionList extends StatelessWidget {
       return Provider.of<TransactionProvider>(context, listen: false)
               .transactionListProvider
               .isEmpty
-          ? const SingleChildScrollView(
+          ? SingleChildScrollView(
               child: Center(
                 child: Padding(
-                  padding: EdgeInsets.all(50.0),
+                  padding: const EdgeInsets.all(50.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      // Lottie.asset('assets/images/no-data.json'),
-                      Text('no data'),
+                      Lottie.asset(
+                        'assets/lotties/animation_ln4pztav.json',
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.fill,
+                      ),
+                      const Text(
+                        'No data found',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.grey),
+                      )
                     ],
                   ),
                 ),
