@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:wallet_app/models/category/category_model.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
 
 class CategoryProvider extends ChangeNotifier {
   final categoryDbName = 'category-database';

@@ -1,6 +1,6 @@
 // import 'package:flutter/foundation.dart';
 // import 'package:flutter/material.dart';
-// import 'package:wallet_app/models/transactions/transaction_model.dart';
+// import 'package:wallet_wise/models/transactions/transaction_model.dart';
 
 // const transactionDbName = 'transaction-db';
 

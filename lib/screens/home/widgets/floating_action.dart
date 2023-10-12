@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:wallet_app/screens/category/screen_category.dart';
-import 'package:wallet_app/screens/transaction/add/screen_add_transaction.dart';
+import 'package:wallet_wise/screens/category/screen_category.dart';
+import 'package:wallet_wise/screens/transaction/add/screen_add_transaction.dart';
 
 class FloatingActionHomeScreen extends StatelessWidget {
   const FloatingActionHomeScreen({

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/models/transactions/transaction_model.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
-import 'package:wallet_app/screens/transaction/view%20all%20transaction/slidable.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
+import 'package:wallet_wise/models/transactions/transaction_model.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
+import 'package:wallet_wise/screens/transaction/view%20all%20transaction/slidable.dart';
 
 class TransactionList extends StatelessWidget {
   const TransactionList({super.key});

@@ -1,4 +1,4 @@
-# wallet_app
+# wallet_wise
 
 A new Flutter project.
 

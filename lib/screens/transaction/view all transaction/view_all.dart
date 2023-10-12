@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wallet_app/screens/transaction/filter/date_filter.dart';
-import 'package:wallet_app/screens/transaction/filter/type_filter.dart';
-import 'package:wallet_app/screens/transaction/search/search_field.dart';
-import 'package:wallet_app/screens/transaction/view%20all%20transaction/transaction_list.dart';
+import 'package:wallet_wise/screens/transaction/filter/date_filter.dart';
+import 'package:wallet_wise/screens/transaction/filter/type_filter.dart';
+import 'package:wallet_wise/screens/transaction/search/search_field.dart';
+import 'package:wallet_wise/screens/transaction/view%20all%20transaction/transaction_list.dart';
 
 class ViewAll extends StatelessWidget {
   const ViewAll({super.key});
@@ -10,30 +10,42 @@ class ViewAll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'All Transactions',
-          style: TextStyle(fontWeight: FontWeight.bold),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/hsbg.jpg"),
+            fit: BoxFit.cover,
+          ),
         ),
-        actions: const [
-          DAteFilterTransaction(),
-          SizedBox(
-            width: 10,
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(Icons.arrow_back),
+                  ),
+                  const Text(
+                    'All Transactions',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                  const DAteFilterTransaction(),
+                  const TypeFilterClass(),
+                ],
+              ),
+              SearchField(),
+              const Expanded(
+                child: TransactionList(),
+              ),
+            ],
           ),
-          TypeFilterClass(),
-          SizedBox(
-            width: 20,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          SearchField(),
-          const Expanded(
-            child: TransactionList(),
-          ),
-        ],
+        ),
       ),
     );
   }

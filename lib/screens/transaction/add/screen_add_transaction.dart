@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/models/transactions/transaction_model.dart';
-import 'package:wallet_app/provider/add_transaction_provider.dart';
-import 'package:wallet_app/provider/category_provider.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
-import 'package:wallet_app/screens/category/Add%20category%20pop%20up/category_add_popup.dart';
-import 'package:wallet_app/screens/home/home_screen.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
+import 'package:wallet_wise/models/transactions/transaction_model.dart';
+import 'package:wallet_wise/provider/add_transaction_provider.dart';
+import 'package:wallet_wise/provider/category_provider.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
+import 'package:wallet_wise/screens/category/Add%20category%20pop%20up/category_add_popup.dart';
+import 'package:wallet_wise/screens/home/home_screen.dart';
 
 class ScreenAddTransaction extends StatelessWidget {
   ScreenAddTransaction({super.key});
@@ -17,9 +17,6 @@ class ScreenAddTransaction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-
-    // // context.read<TransactionProvider>().refreshUiTransaction();
-    // context.read<CategoryProvider>().refreshUiCategory();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TransactionProvider>(context, listen: false)
           .refreshUiTransaction();
@@ -34,23 +31,33 @@ class ScreenAddTransaction extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: InkWell(
+              onTap: () async {
+                await addTransaction(context);
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ));
+              },
+              child: const Icon(
+                Icons.done,
+                color: Colors.black,
+              ),
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              //Logo
-              SizedBox(
-                height: screenSize.width * 0.2,
-                child: Image.asset('assets/images/ic_launcher.png'),
+              const SizedBox(
+                height: 10,
               ),
-              SizedBox(
-                height: screenSize.width * 0.02,
-              ),
-
               //Selected category income or expense
-
               SizedBox(
                 width: double.maxFinite,
                 child: Consumer<AddTransactionProvider>(
@@ -90,8 +97,8 @@ class ScreenAddTransaction extends StatelessWidget {
                 }),
               ),
 
-              SizedBox(
-                height: screenSize.width * 0.05,
+              const SizedBox(
+                height: 20,
               ),
 
               //category type Dropdown
@@ -266,7 +273,7 @@ class ScreenAddTransaction extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: screenSize.width * 0.02,
+                height: screenSize.width * 0.03,
               ),
 
               //amount
@@ -307,45 +314,22 @@ class ScreenAddTransaction extends StatelessWidget {
                 height: screenSize.width * 0.05,
               ),
 
-              // Card(
-              //   elevation: 3,
-              //   child: Padding(
-              //     padding: const EdgeInsets.symmetric(horizontal: 10),
-              //     child: SizedBox(
-              //       height: screenSize.width * 0.4,
-              //       child: TextFormField(
-              //         keyboardType: TextInputType.multiline,
-              //         minLines: 5,
-              //         maxLines: 5,
-              //         controller: _notesTextEditingController,
-              //         decoration: const InputDecoration(
-              //           focusedBorder: InputBorder.none,
-              //           disabledBorder: InputBorder.none,
-              //           enabledBorder: InputBorder.none,
-              //           hintText: 'Notes',
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
               SizedBox(
                 height: screenSize.width * 0.02,
               ),
               //submit
-              SizedBox(
-                width: 500,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    await addTransaction(context);
-
-
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ));
-                  },
-                  child: const Text('Done'),
-                ),
-              ),
+              // SizedBox(
+              //   width: 500,
+              //   child: ElevatedButton(
+              //     onPressed: () async {
+              //       await addTransaction(context);
+              //       Navigator.of(context).pushReplacement(MaterialPageRoute(
+              //         builder: (context) => const HomeScreen(),
+              //       ));
+              //     },
+              //     child: const Text('Done'),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -399,4 +383,3 @@ class ScreenAddTransaction extends StatelessWidget {
     Navigator.of(context).pop();
   }
 }
-

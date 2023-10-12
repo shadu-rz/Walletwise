@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/models/transactions/transaction_model.dart';
-import 'package:wallet_app/provider/add_transaction_provider.dart';
-import 'package:wallet_app/provider/category_provider.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
-import 'package:wallet_app/screens/splash/splash_screen.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
+import 'package:wallet_wise/models/transactions/transaction_model.dart';
+import 'package:wallet_wise/provider/add_transaction_provider.dart';
+import 'package:wallet_wise/provider/category_provider.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
+import 'package:wallet_wise/screens/splash/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,6 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -50,7 +49,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorSchemeSeed: const Color.fromARGB(255, 0, 7, 72),
           useMaterial3: true,
-          // primarySwatch: Colors.amber,
         ),
         debugShowCheckedModeBanner: false,
         home: const SpalshScreen(),

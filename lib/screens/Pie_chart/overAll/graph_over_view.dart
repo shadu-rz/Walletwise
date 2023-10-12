@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
 
 class GraphOverView extends StatelessWidget {
   GraphOverView({super.key});

@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
-import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/models/transactions/transaction_model.dart';
-import 'package:wallet_app/provider/add_transaction_provider.dart';
-import 'package:wallet_app/provider/category_provider.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
+import 'package:wallet_wise/models/transactions/transaction_model.dart';
+import 'package:wallet_wise/provider/add_transaction_provider.dart';
+import 'package:wallet_wise/provider/category_provider.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
 
 // ignore: must_be_immutable
 class EditTransaction extends StatelessWidget {

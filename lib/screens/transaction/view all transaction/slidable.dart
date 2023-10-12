@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/models/transactions/transaction_model.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
-import 'package:wallet_app/screens/transaction/edit/edit_trans.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
+import 'package:wallet_wise/models/transactions/transaction_model.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
+import 'package:wallet_wise/screens/transaction/edit/edit_trans.dart';
 
 class SlidableTransaction extends StatelessWidget {
   const SlidableTransaction({
@@ -21,6 +21,9 @@ class SlidableTransaction extends StatelessWidget {
     return Slidable(
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
+          label: 'edit',
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.transparent,
           onPressed: ((context) {
             Navigator.push(
               context,
@@ -34,9 +37,10 @@ class SlidableTransaction extends StatelessWidget {
             );
           }),
           icon: Icons.edit,
-          foregroundColor: const Color(0xFF2E49FB),
         ),
         SlidableAction(
+          label: 'delete',
+          backgroundColor: Colors.transparent,
           onPressed: ((context) {
             showDialog(
                 context: context,
@@ -88,7 +92,6 @@ class SlidableTransaction extends StatelessWidget {
             child: Text(
               parseDateTime(transaction.date),
               textAlign: TextAlign.center,
-              
             ),
           ),
           title: Text(

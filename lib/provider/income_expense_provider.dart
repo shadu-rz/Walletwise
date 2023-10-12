@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
-// import 'package:wallet_app/models/category/category_model.dart';
-// import 'package:wallet_app/models/transactions/transaction_model.dart';
+// import 'package:wallet_wise/models/category/category_model.dart';
+// import 'package:wallet_wise/models/transactions/transaction_model.dart';
 
 // class IncomeAndExpense extends ChangeNotifier {
 //   double incomeTotal = 0;

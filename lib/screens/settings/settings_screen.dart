@@ -1,38 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:wallet_app/provider/category_provider.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
-import 'package:wallet_app/screens/settings_screen/about/screen_about.dart';
-import 'package:wallet_app/screens/settings_screen/feedback/screen_feedback.dart';
-import 'package:wallet_app/screens/settings_screen/terms%20and%20privacy/screen_terms_and_privacy.dart';
-import 'package:wallet_app/screens/splash/splash_screen.dart';
+import 'package:wallet_wise/provider/category_provider.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
+import 'package:wallet_wise/screens/settings/about/screen_about.dart';
+import 'package:wallet_wise/screens/settings/feedback/screen_feedback.dart';
+import 'package:wallet_wise/screens/settings/terms%20and%20privacy/screen_terms_and_privacy.dart';
+import 'package:wallet_wise/screens/splash/splash_screen.dart';
 
 class ScreenSettings extends StatelessWidget {
   const ScreenSettings({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: Color.fromARGB(255, 0, 7, 72),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/hsbg.jpg"),
+            fit: BoxFit.cover,
           ),
         ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          // color: Colors.amber,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: SafeArea(
             child: Column(
               children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(Icons.arrow_back),
+                    ),
+                    const SizedBox(width: 100),
+                    const Text(
+                      'Settings',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
@@ -164,21 +175,15 @@ class ScreenSettings extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: screenSize.height * 0.4,
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Walletwise 1.2.0',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black38,
-                        ),
-                      )
-                    ],
+                const Spacer(),
+                const Text(
+                  'Walletwise 1.1.0',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black38,
                   ),
-                )
+                ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
