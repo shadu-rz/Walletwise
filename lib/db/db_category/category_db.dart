@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:hive_flutter/adapters.dart';
-// import 'package:wallet_app/models/category/category_model.dart';
+// import 'package:wallet_wise/models/category/category_model.dart';
 
 // const categoryDbName = 'category-database';
 

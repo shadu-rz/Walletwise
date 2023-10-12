@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wallet_app/models/category/category_model.dart';
-import 'package:wallet_app/models/transactions/transaction_model.dart';
-import 'package:wallet_app/provider/category_provider.dart';
-import 'package:wallet_app/provider/transaction_provider.dart';
-import 'package:wallet_app/screens/Pie_chart/screen_pie_chart.dart';
-import 'package:wallet_app/screens/home/widgets/floating_action.dart';
-import 'package:wallet_app/screens/settings_screen/settings_screen.dart';
-import 'package:wallet_app/screens/transaction/edit/edit_trans.dart';
-import 'package:wallet_app/screens/transaction/view%20all%20transaction/view_all.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
+import 'package:wallet_wise/models/transactions/transaction_model.dart';
+import 'package:wallet_wise/provider/category_provider.dart';
+import 'package:wallet_wise/provider/transaction_provider.dart';
+import 'package:wallet_wise/screens/Pie_chart/screen_pie_chart.dart';
+import 'package:wallet_wise/screens/home/widgets/floating_action.dart';
+import 'package:wallet_wise/screens/settings/settings_screen.dart';
+import 'package:wallet_wise/screens/transaction/edit/edit_trans.dart';
+import 'package:wallet_wise/screens/transaction/view%20all%20transaction/slidable.dart';
+import 'package:wallet_wise/screens/transaction/view%20all%20transaction/view_all.dart';
 import 'package:lottie/lottie.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -35,11 +36,20 @@ class HomeScreen extends StatelessWidget {
     Provider.of<TransactionProvider>(context, listen: false)
         .refreshUiTransaction();
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
+      body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/hsbg.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Column(
             children: [
+              const SizedBox(
+                height: 20,
+              ),
               Column(
                 children: [
                   SizedBox(
@@ -52,6 +62,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           child: const CircleAvatar(
+                            backgroundColor: Colors.white54,
                             child: Icon(
                               Icons.settings,
                             ),
@@ -156,7 +167,6 @@ class HomeScreen extends StatelessWidget {
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: Colors.white,
                                   ),
                                   height: screenSize.width * 0.25,
                                   width: screenSize.width * 0.4,
@@ -211,7 +221,6 @@ class HomeScreen extends StatelessWidget {
                           width: screenSize.width * 0.4,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
                           ),
                           child: Card(
                             elevation: 10,
@@ -340,7 +349,7 @@ class HomeScreen extends StatelessWidget {
                             itemBuilder: (ctx, index) {
                               final value =
                                   provider.transactionListProvider[index];
-                              final editValue = TransactionModel(
+                              final transaction = TransactionModel(
                                 id: value.id,
                                 purpose: value.purpose,
                                 amount: value.amount,
@@ -348,130 +357,7 @@ class HomeScreen extends StatelessWidget {
                                 type: value.type,
                                 category: value.category,
                               );
-                              return Slidable(
-                                endActionPane: ActionPane(
-                                  motion: const ScrollMotion(),
-                                  children: [
-                                    //    EDIT  ICON
-
-                                    SlidableAction(
-                                      icon: Icons.edit,
-                                      label: 'edit',
-                                      onPressed: (context) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: ((context) =>
-                                                EditTransaction(
-                                                  obj: editValue,
-                                                )),
-                                          ),
-                                        );
-                                      },
-                                    ),
-
-                                    // DELETE   ICON
-
-                                    SlidableAction(
-                                      onPressed: ((context) {
-                                        showDialog(
-                                          context: context,
-                                          builder: ((context) {
-                                            return AlertDialog(
-                                              content: const Text(
-                                                'Do you want to Delete',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              actions: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: (() {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      }),
-                                                      child: const Text(
-                                                        'No',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: (() {
-                                                        provider
-                                                            .deleteTransaction(
-                                                                value);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      }),
-                                                      child: const Text(
-                                                        'Yes',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            );
-                                          }),
-                                        );
-                                      }),
-                                      icon: Icons.delete,
-                                      foregroundColor: Colors.red,
-                                      label: 'Delete',
-                                    ),
-                                  ],
-                                ),
-                                key: Key(value.id!),
-                                child: Card(
-                                  color: value.type == CategoryType.income
-                                      ? Colors.green
-                                      : Colors.red,
-                                  elevation: 5,
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                        dividerColor: Colors.transparent),
-                                    child: ListTile(
-                                      leading: CircleAvatar(
-                                        radius: 30,
-                                        child: Text(
-                                          parseDate(value.date),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      title: Text(
-                                        value.category.name,
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                      subtitle: Text(
-                                        value.purpose,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      trailing: Text(
-                                        '₹${value.amount}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
+                              return SlidableTransaction(transaction: transaction);
                             },
                             separatorBuilder: (ctx, index) {
                               return SizedBox(
@@ -480,16 +366,13 @@ class HomeScreen extends StatelessWidget {
                             },
                             itemCount: provider.transactionListProvider.length,
                           )
-                        : SizedBox(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 120),
-                              child: Lottie.asset(
-                                'assets/lotties/animation_ln4pztav.json',
-                                width: 200,
-                                height: 200,
-                                fit: BoxFit.fill,
-                              ),
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 128),
+                            child: Lottie.asset(
+                              'assets/lotties/animation_ln4pztav.json',
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.fill,
                             ),
                           );
                   },

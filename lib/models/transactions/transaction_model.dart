@@ -1,5 +1,5 @@
 import 'package:hive_flutter/adapters.dart';
-import 'package:wallet_app/models/category/category_model.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
 part 'transaction_model.g.dart';
 
 @HiveType(typeId: 3)

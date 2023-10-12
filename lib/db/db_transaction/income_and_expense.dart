@@ -2,7 +2,7 @@
 
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
-// import 'package:wallet_app/provider/transaction_provider.dart';
+// import 'package:wallet_wise/provider/transaction_provider.dart';
 // import '../../models/category/category_model.dart';
 // import '../../models/transactions/transaction_model.dart';
 

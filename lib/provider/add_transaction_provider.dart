@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet_app/models/category/category_model.dart';
+import 'package:wallet_wise/models/category/category_model.dart';
 
 class AddTransactionProvider extends ChangeNotifier {
   

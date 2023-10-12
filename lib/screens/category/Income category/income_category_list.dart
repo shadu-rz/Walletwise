@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:wallet_app/provider/category_provider.dart';
-import 'package:wallet_app/screens/category/Edit%20Category/edit_category_popup.dart';
+import 'package:wallet_wise/provider/category_provider.dart';
+import 'package:wallet_wise/screens/category/Edit%20Category/edit_category_popup.dart';
 
 class IncomeCategoryList extends StatelessWidget {
   const IncomeCategoryList({super.key});
@@ -21,6 +22,8 @@ class IncomeCategoryList extends StatelessWidget {
                 motion: const ScrollMotion(),
                 children: [
                   SlidableAction(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.transparent,
                     onPressed: (ctx) {
                       showEditCategoryPopup(context);
                     },
@@ -28,6 +31,7 @@ class IncomeCategoryList extends StatelessWidget {
                     label: 'Edit',
                   ),
                   SlidableAction(
+                    backgroundColor: Colors.transparent,
                     onPressed: (ctx) {
                       showDialog(
                         context: context,
