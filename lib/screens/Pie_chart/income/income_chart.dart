@@ -30,7 +30,7 @@ class IncomeChart extends StatelessWidget {
                          Lottie.asset(
                             'assets/lotties/animation_ln4pztav.json',
                             width: 200,
-                            height: 200,
+                            height: 140,
                             fit: BoxFit.fill,
                           ),
                           const Text(

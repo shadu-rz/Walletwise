@@ -7,6 +7,7 @@ import 'package:wallet_wise/models/transactions/transaction_model.dart';
 import 'package:wallet_wise/provider/category_provider.dart';
 import 'package:wallet_wise/provider/transaction_provider.dart';
 import 'package:wallet_wise/screens/Pie_chart/screen_pie_chart.dart';
+import 'package:wallet_wise/screens/category/screen_category.dart';
 import 'package:wallet_wise/screens/home/widgets/floating_action.dart';
 import 'package:wallet_wise/screens/settings/settings_screen.dart';
 import 'package:wallet_wise/screens/transaction/edit/edit_trans.dart';
@@ -68,7 +69,6 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           onTap: () {
-                            // return showMenuModalBottomSheet(context);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const ScreenSettings(),
@@ -87,72 +87,77 @@ class HomeScreen extends StatelessWidget {
                           width: screenSize.width * 0.3,
                           height: screenSize.width * 0.1,
                           // color: Colors.amber,
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Walletwise',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                  color: Color.fromARGB(255, 0, 7, 72),
-                                ),
+                          child: const Center(
+                            child: Text(
+                              'Walletwise',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 0, 7, 72),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: screenSize.width * 0.2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Consumer<TransactionProvider>(
-                          builder: (ctx, value, child) {
-                            return Column(
-                              children: [
-                                value.totalBalance >= 0
-                                    ? const Text(
-                                        'Balance',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black54,
-                                        ),
-                                      )
-                                    : const Text(
-                                        'Loss',
-                                        style: TextStyle(
-                                            fontSize: 21,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Consumer<TransactionProvider>(
+                        builder: (ctx, value, child) {
+                          return Container(
+                            height: screenSize.width * 0.2,
+                            width: screenSize.width * 0.5,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Card(
+                              elevation: 10,
+                              child: Column(
+                                children: [
+                                  value.totalBalance >= 0
+                                      ? const Text(
+                                          'Balance',
+                                          style: TextStyle(
+                                            fontSize: 22,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.black54),
-                                      ),
-                                value.totalBalance >= 0
-                                    ? Text(
-                                        '${value.totalBalance.abs().toString()} ₹',
-                                        style: const TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.w800,
-                                          color: Color.fromARGB(210, 0, 7, 72),
+                                            color: Colors.black54,
+                                          ),
+                                        )
+                                      : const Text(
+                                          'Loss',
+                                          style: TextStyle(
+                                              fontSize: 21,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black54),
                                         ),
-                                      )
-                                    : Text(
-                                        '-${value.totalBalance.abs().toString()} ₹',
-                                        style: const TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.w800,
-                                          color: Colors.red,
+                                  value.totalBalance >= 0
+                                      ? Text(
+                                          '${value.totalBalance.abs().toString()} ₹',
+                                          style: const TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.w800,
+                                            color:
+                                                Color.fromRGBO(0, 7, 72, 0.824),
+                                          ),
+                                        )
+                                      : Text(
+                                          '-${value.totalBalance.abs().toString()} ₹',
+                                          style: const TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.red,
+                                          ),
                                         ),
-                                      )
-                              ],
-                            );
-                          },
-                          //
-                        )
-                      ],
-                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        //
+                      )
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -211,9 +216,7 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      SizedBox(
-                        width: screenSize.width * 0.03,
-                      ),
+                      
                       Consumer<TransactionProvider>(
                           builder: (context, value, _) {
                         return Container(
@@ -263,71 +266,72 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                height: screenSize.width * 0.1,
-                                child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: ((context) =>
-                                            const PieChartAll()),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.pie_chart),
-                                  label: const Text('Statistics'),
+                              Expanded(
+                                child: SizedBox(
+                                  height: screenSize.width * 0.1,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: ((context) =>
+                                              const CategoryScreen()),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.category),
+                                    label: const Text('Categories',style: TextStyle(fontSize: 9),),
+                                  ),
+                                  // color: Colors.amber,
                                 ),
-                                // color: Colors.amber,
                               ),
-                              SizedBox(
-                                height: screenSize.width * 0.11,
-                                child: const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Transactions',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
+                              Expanded(
+                                child: SizedBox(
+                                  height: screenSize.width * 0.1,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: ((context) =>
+                                              const PieChartAll()),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.pie_chart),
+                                    label: const Text('Statistics',style: TextStyle(fontSize: 10),),
+                                  ),
+                                  // color: Colors.amber,
                                 ),
-                                // color: Colors.blue,
                               ),
-                              SizedBox(
-                                height: screenSize.width * 0.11,
-                                child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    // showSearch(
-                                    //   context: context,
-                                    //   delegate: SearchWidget(),
-                                    // );
-                                    context
-                                            .read<TransactionProvider>()
-                                            .overviewTransactions =
-                                        Provider.of<TransactionProvider>(
-                                                context,
-                                                listen: false)
-                                            .transactionListProvider;
-                                    context
-                                        .read<TransactionProvider>()
-                                        .notifyListeners();
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) => const ViewAll(),
-                                    ));
-                                  },
-                                  icon: const Icon(Icons.search),
-                                  label: const Text('Search'),
+                             
+                              Expanded(
+                                child: SizedBox(
+                                  height: screenSize.width * 0.11,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      context
+                                              .read<TransactionProvider>()
+                                              .overviewTransactions =
+                                          Provider.of<TransactionProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .transactionListProvider;
+                                      context
+                                          .read<TransactionProvider>()
+                                          .notifyListeners();
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) => const ViewAll(),
+                                      ));
+                                    },
+                                    icon: const Icon(Icons.search),
+                                    label: const Text('Search'),
+                                  ),
+                                  // color: Colors.pink,
                                 ),
-                                // color: Colors.pink,
                               ),
                             ],
                           ),
@@ -357,7 +361,8 @@ class HomeScreen extends StatelessWidget {
                                 type: value.type,
                                 category: value.category,
                               );
-                              return SlidableTransaction(transaction: transaction);
+                              return SlidableTransaction(
+                                  transaction: transaction);
                             },
                             separatorBuilder: (ctx, index) {
                               return SizedBox(
@@ -367,7 +372,7 @@ class HomeScreen extends StatelessWidget {
                             itemCount: provider.transactionListProvider.length,
                           )
                         : Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 128),
+                            padding: const EdgeInsets.symmetric(vertical: 180),
                             child: Lottie.asset(
                               'assets/lotties/animation_ln4pztav.json',
                               width: 200,

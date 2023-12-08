@@ -8,6 +8,7 @@ import 'package:wallet_wise/provider/transaction_provider.dart';
 import 'package:wallet_wise/screens/category/Add%20category%20pop%20up/category_add_popup.dart';
 import 'package:wallet_wise/screens/home/home_screen.dart';
 
+
 class ScreenAddTransaction extends StatelessWidget {
   ScreenAddTransaction({super.key});
 
@@ -37,9 +38,9 @@ class ScreenAddTransaction extends StatelessWidget {
             child: InkWell(
               onTap: () async {
                 await addTransaction(context);
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const HomeScreen(),
-                ));
+                // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                //   builder: (context) => const HomeScreen(),
+                // ));
               },
               child: const Icon(
                 Icons.done,
@@ -337,30 +338,29 @@ class ScreenAddTransaction extends StatelessWidget {
     );
   }
 
-  Future addTransaction(context) async {
+  Future<void> addTransaction(context) async {
     final purposeText = _purposeTextEditingController.text;
     final amountText = _amountTextEditingController.text;
-    if (purposeText.isEmpty) {
-      return;
-    }
-    if (amountText.isEmpty) {
+
+    if (purposeText.isEmpty || amountText.isEmpty) {
+      // Show an error message or handle the case where fields are empty
       return;
     }
 
     if (Provider.of<AddTransactionProvider>(context, listen: false)
-            .selectedDate ==
-        null) {
-      return;
+                .selectedDate ==
+            null ||
+        Provider.of<AddTransactionProvider>(context, listen: false)
+                .selectedCategoryModel ==
+            null) {
+      // Show an error message or handle the case where date or category is not selected
+      return ;
     }
 
-    if (Provider.of<AddTransactionProvider>(context, listen: false)
-            .selectedCategoryModel ==
-        null) {
-      return;
-    }
     final parsedAmount = double.tryParse(amountText);
     if (parsedAmount == null) {
-      return;
+      // Show an error message or handle the case where amount is not a valid number
+      return ;
     }
 
     final model = TransactionModel(
@@ -380,6 +380,11 @@ class ScreenAddTransaction extends StatelessWidget {
     Provider.of<TransactionProvider>(context, listen: false)
         .refreshUiTransaction();
     Provider.of<CategoryProvider>(context, listen: false).refreshUiCategory();
-    Navigator.of(context).pop();
+    Navigator.of(context)
+        .pop(); 
+    // Navigate to the HomeScreen only if all conditions are met
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => const HomeScreen(),
+    ));
   }
 }
