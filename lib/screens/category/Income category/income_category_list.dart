@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:wallet_wise/provider/category_provider.dart';
-import 'package:wallet_wise/screens/category/Edit%20Category/edit_category_popup.dart';
 
 class IncomeCategoryList extends StatelessWidget {
   const IncomeCategoryList({super.key});
@@ -13,95 +10,94 @@ class IncomeCategoryList extends StatelessWidget {
     // final screenSize = MediaQuery.of(context).size;
     return Consumer<CategoryProvider>(
       builder: (ctx, provider, child) {
-        return ListView.separated(
+        return GridView.builder(
+          itemCount: provider.incomeCategoryProvider.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 3,
+              crossAxisSpacing: 3,
+              childAspectRatio: 1.6),
           itemBuilder: (context, index) {
             final category = provider.incomeCategoryProvider[index];
-            return Slidable(
-              key: Key(category.id),
-              endActionPane: ActionPane(
-                motion: const ScrollMotion(),
-                children: [
-                  SlidableAction(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.transparent,
-                    onPressed: (ctx) {
-                      showEditCategoryPopup(context);
-                    },
-                    icon: Icons.edit,
-                    label: 'Edit',
-                  ),
-                  SlidableAction(
-                    backgroundColor: Colors.transparent,
-                    onPressed: (ctx) {
-                      showDialog(
-                        context: context,
-                        builder: ((context) {
-                          return AlertDialog(
-                            content: const Text(
-                              'Do you want to Delete',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                            actions: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                    onPressed: (() {
-                                      Navigator.of(context).pop();
-                                    }),
-                                    child: const Text(
-                                      'No',
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: (() {
-                                      provider.deleteCategory(category.id);
-                                      Navigator.of(context).pop();
-                                    }),
-                                    child: const Text(
-                                      'Yes',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        }),
-                      );
-                    },
-                    icon: Icons.delete,
-                    label: 'Delete',
-                    foregroundColor: Colors.red,
-                  ),
-                ],
-              ),
+            return Padding(
+              padding: const EdgeInsets.all(12.0),
               child: Card(
                 elevation: 5,
                 margin: const EdgeInsets.all(10),
                 color: Colors.green,
-                child: ListTile(
-                  title: Text(
-                    category.name,
-                    style: const TextStyle(
-                      color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          category.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: ((context) {
+                                  return AlertDialog(
+                                    content: const Text(
+                                      'Do you want to Delete',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          TextButton(
+                                            onPressed: (() {
+                                              Navigator.of(context).pop();
+                                            }),
+                                            child: const Text(
+                                              'No',
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: (() {
+                                              provider
+                                                  .deleteCategory(category.id);
+                                              Navigator.of(context).pop();
+                                            }),
+                                            child: const Text(
+                                              'Yes',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              );
+                            },
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            )),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
               ),
             );
           },
-          separatorBuilder: (context, index) {
-            return const SizedBox(
-              height: 0,
-            );
-          },
-          itemCount: provider.incomeCategoryProvider.length,
         );
       },
     );

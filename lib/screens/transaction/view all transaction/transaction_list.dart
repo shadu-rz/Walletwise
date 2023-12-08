@@ -45,14 +45,14 @@ class TransactionList extends StatelessWidget {
           ? SingleChildScrollView(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(50.0),
+                  padding: const EdgeInsets.symmetric(vertical: 180.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Lottie.asset(
                         'assets/lotties/animation_ln4pztav.json',
                         width: 200,
-                        height: 200,
+                        height: 140,
                         fit: BoxFit.fill,
                       ),
                       const Text(
